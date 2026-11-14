@@ -7,12 +7,12 @@
 
   grade: stable 
   confinement: strict
-  base: core20
+  base: core22
 
   parts:
     v4l2onvif:
       plugin: make
-      disable-parallel: true
+      make-parameters: ["-j1"]
       source: .
       source-type: git
       build-packages:
@@ -27,14 +27,14 @@
       - libssl-dev
       - zlib1g-dev
       stage-packages:
-      - libssl1.1
-      - libgsoap-2.8.91
+      - libgsoap-dev
+      - libssl-dev
 
   apps:
     server:
-      command: onvif-server.exe -H "$(snapctl get http-port)" -P "$(snapctl get rtsp-port)" -i "$(snapctl get devices)"
+      command: onvif-server.exe -H $http_port -P $rtsp_port -i $devices
       daemon: simple
-      plugs: [network-bind]
+      plugs: [network-bind, camera]
 
     client:
       command: onvif-client.exe 
